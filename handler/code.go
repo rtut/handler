@@ -2,6 +2,6 @@ package handler
 
 import "fmt"
 
-func customHandler() {
+func CustomHandler() {
 	fmt.Println("some logic")
 }
