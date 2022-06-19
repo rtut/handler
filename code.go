@@ -5,9 +5,10 @@ import (
 	"time"
 )
 
-type CustomHandler struct{}
+type Handler struct{}
 
-func (ch CustomHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (ch *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	tm := time.Now().Format(time.RFC822)
 	w.Write([]byte("The time is: " + tm))
 }
+gi
