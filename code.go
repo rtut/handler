@@ -1,13 +1,34 @@
 package handler
 
 import (
+	"bytes"
+	"io/ioutil"
+	"log"
 	"net/http"
-	"time"
 )
 
 type Handler struct{}
 
 func (ch *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	tm := time.Now().Format(time.RFC822)
-	w.Write([]byte("The time is: " + tm))
+	if r.Method != http.MethodPost {
+		w.Write([]byte("blabla\n"))
+
+	}
+	responseData, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	count := bytes.Count(responseData, []byte{'\n'})
+	if count > 14 {
+		w.Write([]byte("problemmms"))
+	}
+}
+
+type URL struct {
+	url        string
+	sizeAnswer uint
+}
+
+func (ch *Handler) readBody() {
+
 }
