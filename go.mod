@@ -1,9 +1,4 @@
 module github.com/rtut/handler
-c
-type URL struct {
-	url        string
-	sizeAnswer uint
-}
 
 go 1.17
 
