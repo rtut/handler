@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"sync"
+)
+
+const (
+	limitRequest = 100
 )
 
 type Handler struct{}
@@ -27,23 +30,24 @@ func (ch *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	res := make(chan int64)
 
 	for _, url := range urls {
+		wg.Add(1)
 		go getContentLength(&wg, res, url)
 	}
 
 	go func() {
 		wg.Wait()
+		close(res)
 	}()
 
 	for size := range res {
 		r := strconv.FormatInt(size, 10) + "\n"
 		w.Write([]byte(r))
 	}
-	close(res)
 }
 
 func getContentLength(wg *sync.WaitGroup, transport chan int64, rawURL []byte) {
 	url := string(rawURL)
-	resp, err := http.Get(url)
+	resp, err := http.Head(url)
 	if err != nil {
 		return
 	}
@@ -54,12 +58,12 @@ func getContentLength(wg *sync.WaitGroup, transport chan int64, rawURL []byte) {
 func parseURLs(w http.ResponseWriter, r *http.Request) ([][]byte, error) {
 	responseData, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, "can't parse request body", http.StatusBadRequest)
 		return [][]byte{}, err
 	}
 	responseData = bytes.TrimRight(responseData, "\n")
 	count := bytes.Count(responseData, []byte("\n"))
-	if count > 14 {
+	if count > limitRequest {
 		msg := "number of you urls over 100"
 		http.Error(w, msg, http.StatusBadRequest)
 		return nil, fmt.Errorf(msg)
