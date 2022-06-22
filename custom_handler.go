@@ -14,7 +14,7 @@ type Handler struct{}
 
 func (ch *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		w.Write([]byte("blabla\n"))
+		http.Error(w, "try another method", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -29,6 +29,7 @@ func (ch *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	for _, url := range urls {
 		go getContentLength(&wg, res, url)
 	}
+
 	go func() {
 		wg.Wait()
 	}()
@@ -44,7 +45,6 @@ func getContentLength(wg *sync.WaitGroup, transport chan int64, rawURL []byte) {
 	url := string(rawURL)
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 	transport <- resp.ContentLength
@@ -60,10 +60,10 @@ func parseURLs(w http.ResponseWriter, r *http.Request) ([][]byte, error) {
 	responseData = bytes.TrimRight(responseData, "\n")
 	count := bytes.Count(responseData, []byte("\n"))
 	if count > 14 {
-		w.Write([]byte("problemmms"))
-		return [][]byte{}, fmt.Errorf("")
+		msg := "number of you urls over 100"
+		http.Error(w, msg, http.StatusBadRequest)
+		return nil, fmt.Errorf(msg)
 	}
 	urls := bytes.Split(responseData, []byte("\n"))
 	return urls, nil
 }
-
