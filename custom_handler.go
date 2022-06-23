@@ -11,18 +11,23 @@ import (
 
 const (
 	limitRequest = 100
+
+	errorMethodNotAllowed = "try POST method"
+	errorLimitURL         = "number of you urls over %d"
+	errorCantParseBody    = "can't parse request body"
 )
 
 type Handler struct{}
 
 func (ch *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "try another method", http.StatusMethodNotAllowed)
+		http.Error(w, errorMethodNotAllowed, http.StatusMethodNotAllowed)
 		return
 	}
 
 	urls, err := parseURLs(w, r)
 	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -51,6 +56,7 @@ func getContentLength(wg *sync.WaitGroup, transport chan int64, rawURL []byte) {
 	if err != nil {
 		return
 	}
+
 	transport <- resp.ContentLength
 	wg.Done()
 }
@@ -58,15 +64,13 @@ func getContentLength(wg *sync.WaitGroup, transport chan int64, rawURL []byte) {
 func parseURLs(w http.ResponseWriter, r *http.Request) ([][]byte, error) {
 	responseData, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "can't parse request body", http.StatusBadRequest)
+		http.Error(w, errorCantParseBody, http.StatusBadRequest)
 		return [][]byte{}, err
 	}
 	responseData = bytes.TrimRight(responseData, "\n")
-	count := bytes.Count(responseData, []byte("\n"))
+	count := bytes.Count(responseData, []byte("\n")) + 1
 	if count > limitRequest {
-		msg := "number of you urls over 100"
-		http.Error(w, msg, http.StatusBadRequest)
-		return nil, fmt.Errorf(msg)
+		return nil, fmt.Errorf(errorLimitURL, limitRequest)
 	}
 	urls := bytes.Split(responseData, []byte("\n"))
 	return urls, nil
