@@ -25,7 +25,7 @@ func (ch *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	urls, err := parseURLs(w, r)
+	urls, err := parseURLs(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -61,11 +61,10 @@ func getContentLength(wg *sync.WaitGroup, transport chan int64, rawURL []byte) {
 	wg.Done()
 }
 
-func parseURLs(w http.ResponseWriter, r *http.Request) ([][]byte, error) {
+func parseURLs(r *http.Request) ([][]byte, error) {
 	responseData, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, errorCantParseBody, http.StatusBadRequest)
-		return [][]byte{}, err
+		return nil, err
 	}
 	responseData = bytes.TrimRight(responseData, "\n")
 	count := bytes.Count(responseData, []byte("\n")) + 1
