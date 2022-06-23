@@ -33,6 +33,7 @@ func (chs *customHandlerSuit) TestResponseOK() {
 		Persist().
 		Reply(200).
 		File("1.jpeg")
+	defer gock.Off()
 
 	urls := "http://some.url/pic1\nhttp://some.url/pic1\n"
 
@@ -51,8 +52,6 @@ func (chs *customHandlerSuit) TestResponseOK() {
 	chs.NoError(err)
 	size := fi.Size()
 
-	gock.Off()
-
 	chs.Equal(fmt.Sprintf("%d\n%d\n", size, size), res.Body.String())
 }
 
@@ -61,6 +60,7 @@ func (chs *customHandlerSuit) TestLimitURLs() {
 		Head("/pic1").
 		Persist().
 		Reply(200)
+	defer gock.Off()
 
 	urls := ""
 	for i := 0; i < 101; i++ {
@@ -78,8 +78,6 @@ func (chs *customHandlerSuit) TestLimitURLs() {
 	res := httptest.NewRecorder()
 	chs.Suite.NoError(err)
 	chs.handler.ServeHTTP(res, request)
-
-	gock.Off()
 
 	chs.Equal(http.StatusBadRequest, res.Code)
 	// http.Error and new line in the end of response, because internal call - fmt.Fprintln(w, error)
