@@ -22,6 +22,8 @@ The quantity and quality of code coverage with tests depends on many factors:
 * capabilities (time limit on develop, difficult cases, different type of tests)
 * etc .....
 
+May be necessary test on timeout (and logic in code on goroutine timeout)
+
 My cover 91.2%.
 
 ```
