@@ -22,7 +22,10 @@ The quantity and quality of code coverage with tests depends on many factors:
 * capabilities (time limit on develop, difficult cases, different type of tests)
 * etc .....
 
-May be necessary test on timeout (and logic in code on goroutine timeout)
+May be necessary test on timeout (and logic in code on goroutine timeout).
+Part of code where i have problem with http.Head, necessary test it based on expected behavior:
+* ignore problem with http.Head request (i use it and didn't handle this behavior in test)
+* interrupt all program
 
 My cover 91.2%.
 
