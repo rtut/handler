@@ -25,7 +25,7 @@ The quantity and quality of code coverage with tests depends on many factors:
 My cover 91.2%.
 
 ```
-go tool cover -html=coverage.out
+go tool cover -html=my_coverage.out
 ```
 
 Test on race condition, did not reveal a data race.
