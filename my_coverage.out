@@ -1,0 +1,19 @@
+mode: set
+github.com/rtut/handler/custom_handler.go:22.70,23.33 1 1
+github.com/rtut/handler/custom_handler.go:28.2,29.16 2 1
+github.com/rtut/handler/custom_handler.go:34.2,37.27 3 1
+github.com/rtut/handler/custom_handler.go:42.2,42.12 1 1
+github.com/rtut/handler/custom_handler.go:47.2,47.24 1 1
+github.com/rtut/handler/custom_handler.go:23.33,26.3 2 1
+github.com/rtut/handler/custom_handler.go:29.16,32.3 2 1
+github.com/rtut/handler/custom_handler.go:37.27,40.3 2 1
+github.com/rtut/handler/custom_handler.go:42.12,45.3 2 1
+github.com/rtut/handler/custom_handler.go:47.24,50.3 2 1
+github.com/rtut/handler/custom_handler.go:53.80,56.16 3 1
+github.com/rtut/handler/custom_handler.go:60.2,61.11 2 1
+github.com/rtut/handler/custom_handler.go:56.16,58.3 1 0
+github.com/rtut/handler/custom_handler.go:64.74,66.16 2 1
+github.com/rtut/handler/custom_handler.go:70.2,72.26 3 1
+github.com/rtut/handler/custom_handler.go:75.2,76.18 2 1
+github.com/rtut/handler/custom_handler.go:66.16,69.3 2 0
+github.com/rtut/handler/custom_handler.go:72.26,74.3 1 1
